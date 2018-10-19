@@ -172,7 +172,7 @@ public class ViewPagerActivity extends AppCompatActivity {
 
                 setupDialog.dismiss();
                 LoadingDialog.showDialogForLoading(ViewPagerActivity.this);
-                startActivity(new Intent(ViewPagerActivity.this,GaoActivity.class));
+                startActivity(new Intent(ViewPagerActivity.this,Gao2Activity.class));
                 LoadingDialog.cancelDialogForLoading();
                 finish();
 
