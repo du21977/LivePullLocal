@@ -12,8 +12,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.dibi.livepulllocal.GlobalApplication;
 import com.dibi.livepulllocal.R;
 import com.dibi.livepulllocal.bean.AllUrlBean;
+import com.dibi.livepulllocal.entity.Gao;
 import com.dibi.livepulllocal.view.MyIjkVideoView;
 import com.dibi.livepulllocal.view.OnDoubleClickListener;
 import com.google.gson.Gson;
@@ -28,7 +30,7 @@ public class TestFm extends Fragment{
 	private int flag;
 	private TextView tv;
 	//
-	private AllUrlBean allUrlBean;
+	//private AllUrlBean allUrlBean;
 
 	private RelativeLayout rl_item_total;
 
@@ -56,12 +58,16 @@ public class TestFm extends Fragment{
 //			list = bundle.getStringArrayList("content");
 			result = bundle.getString("content");
 			flag = bundle.getInt("flag");
-			allUrlBean = new Gson().fromJson(result,AllUrlBean.class);
-//			Log.e("vvvv---",result+"res");
-			if (allUrlBean !=null&& allUrlBean.getData().size()>0){
-//				Log.e("vvvv---",allUrlBean.getData().get(flag).get(0).getPath());
-			}
+
+
+//			allUrlBean = new Gson().fromJson(result,AllUrlBean.class);
+////			Log.e("vvvv---",result+"res");
+//			if (allUrlBean !=null&& allUrlBean.getData().size()>0){
+////				Log.e("vvvv---",allUrlBean.getData().get(flag).get(0).getPath());
+//			}
 		}
+		Log.e("--全",flag+"");
+		Log.e("--全部改造后传值--", GlobalApplication.listsAll.toString());
 	}
 	
 	@Override
@@ -82,7 +88,7 @@ public class TestFm extends Fragment{
 //		tv.setText(allUrlBean.getData().get(flag).get(0).getPath());
 
 		rl_item_total = view.findViewById(R.id.rl_item_total);
-		if(allUrlBean.getData().get(flag).size()==1){
+		if(GlobalApplication.listsAll.get(flag).size()==1){
 //			Toast.makeText(getActivity(),"为何只有一个视频",Toast.LENGTH_LONG).show();
 			// 1.添加左边的播放器
 			final RelativeLayout.LayoutParams   layoutParams_left = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -90,12 +96,12 @@ public class TestFm extends Fragment{
 			myIjkVideoView_11[0].setBackgroundColor(Color.BLUE);
 			myIjkVideoView_11[0].setLayoutParams(layoutParams_left);
 			rl_item_total.addView(myIjkVideoView_11[0]);
-			String PULL_0 = allUrlBean.getData().get(flag).get(0).getPath();
+			String PULL_0 = GlobalApplication.listsAll.get(flag).get(0).getPath();
 			myIjkVideoView_11[0].setVideoPath(PULL_0);
 			myIjkVideoView_11[0].start();
 
 		}
-		if(allUrlBean.getData().get(flag).size()==2){
+		if(GlobalApplication.listsAll.get(flag).size()==2){
 //			Toast.makeText(getActivity(),"为何只有一个视频",Toast.LENGTH_LONG).show();
 			final List<MyIjkVideoView[]> list = new ArrayList<MyIjkVideoView[]>() ;
 			//在这里搞事情
@@ -142,9 +148,9 @@ public class TestFm extends Fragment{
 //        String PULL_0 = Setup1Activity.pull__0;
 //        String PULL_1 = Setup1Activity.pull__1;
 //        String PULL_2 = Setup1Activity.pull__2;
-			String PULL_0 = allUrlBean.getData().get(flag).get(0).getPath();
-			String PULL_1 = allUrlBean.getData().get(flag).get(1).getPath();
-			String PULL_2 = allUrlBean.getData().get(flag).get(1).getPath();
+			String PULL_0 = GlobalApplication.listsAll.get(flag).get(0).getPath();
+			String PULL_1 = GlobalApplication.listsAll.get(flag).get(1).getPath();
+			String PULL_2 = GlobalApplication.listsAll.get(flag).get(1).getPath();
 			myIjkVideoView_1[0].setVideoPath(PULL_0);
 			myIjkVideoView_2[0].setVideoPath(PULL_1);
 			myIjkVideoView_3[0].setVideoPath(PULL_2);
@@ -210,7 +216,7 @@ public class TestFm extends Fragment{
 			//添加查看地址
 
 		}
-		if(allUrlBean.getData().get(flag).size()==3){
+		if(GlobalApplication.listsAll.get(flag).size()==3){
 			final List<MyIjkVideoView[]> list = new ArrayList<MyIjkVideoView[]>() ;
 			//在这里搞事情
 			// 1.添加左边的播放器
@@ -256,9 +262,9 @@ public class TestFm extends Fragment{
 //        String PULL_0 = Setup1Activity.pull__0;
 //        String PULL_1 = Setup1Activity.pull__1;
 //        String PULL_2 = Setup1Activity.pull__2;
-			String PULL_0 = allUrlBean.getData().get(flag).get(0).getPath();
-			String PULL_1 = allUrlBean.getData().get(flag).get(1).getPath();
-			String PULL_2 = allUrlBean.getData().get(flag).get(2).getPath();
+			String PULL_0 = GlobalApplication.listsAll.get(flag).get(0).getPath();
+			String PULL_1 = GlobalApplication.listsAll.get(flag).get(1).getPath();
+			String PULL_2 = GlobalApplication.listsAll.get(flag).get(2).getPath();
 			myIjkVideoView_1[0].setVideoPath(PULL_1);
 			myIjkVideoView_2[0].setVideoPath(PULL_0);
 			myIjkVideoView_3[0].setVideoPath(PULL_2);
@@ -324,7 +330,7 @@ public class TestFm extends Fragment{
 			//添加查看地址
 
 ///////////////////////////////////////////////////下面是4个/////////////////////////////////////////////////////////////////////////////////////
-		}else if(allUrlBean.getData().get(flag).size()>3){
+		}else if(GlobalApplication.listsAll.get(flag).size()>3){
 			final List<MyIjkVideoView[]> list = new ArrayList<MyIjkVideoView[]>() ;
 			//在这里搞事情
 			// 1.添加左边的播放器
@@ -383,10 +389,10 @@ public class TestFm extends Fragment{
 			list.add(myIjkVideoView_43);
 			list.add(myIjkVideoView_4middle);
 
-			String PULL_0 = allUrlBean.getData().get(flag).get(0).getPath();
-			String PULL_1 = allUrlBean.getData().get(flag).get(1).getPath();
-			String PULL_2 = allUrlBean.getData().get(flag).get(2).getPath();
-			String PULL_3 = allUrlBean.getData().get(flag).get(3).getPath();
+			String PULL_0 = GlobalApplication.listsAll.get(flag).get(0).getPath();
+			String PULL_1 = GlobalApplication.listsAll.get(flag).get(1).getPath();
+			String PULL_2 = GlobalApplication.listsAll.get(flag).get(2).getPath();
+			String PULL_3 = GlobalApplication.listsAll.get(flag).get(3).getPath();
 			myIjkVideoView_41[0].setVideoPath(PULL_0);
 			myIjkVideoView_42[0].setVideoPath(PULL_1);
 			myIjkVideoView_43[0].setVideoPath(PULL_3);
@@ -529,6 +535,7 @@ public class TestFm extends Fragment{
 		//bundle.putStringArrayList("content", result);
 //		Log.e("vvvv---",result+"---");
 		bundle.putString("content",result);
+
 		bundle.putInt("flag", flag);
 		TestFm testFm = new TestFm();
 		testFm.setArguments(bundle);

@@ -14,8 +14,15 @@ import android.widget.Toast;
 import com.dibi.livepulllocal.bean.AllUrlBean;
 import com.dibi.livepulllocal.dialog.LoadingDialog;
 import com.dibi.livepulllocal.dialog.MyAlertDialog;
+import com.dibi.livepulllocal.entity.Gao;
+import com.dibi.livepulllocal.entity.GaoId;
+import com.dibi.livepulllocal.fragment.FragmentVPAdapter;
 import com.dibi.livepulllocal.fragment.TestFm;
+import com.dibi.livepulllocal.greendao.GaoDao;
+import com.dibi.livepulllocal.greendao.GaoIdDao;
 import com.dibi.livepulllocal.view.NoPreloadViewPager;
+
+import org.greenrobot.greendao.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +48,21 @@ public class ViewPagerActivity extends AppCompatActivity {
     TextView tv_setup;
     ImageView iv_setup;
 
+    private List<Gao> listsGao;
+    private  List<GaoId> gaoIdList;
+    private GaoDao dao;
+    private GaoIdDao gaoIdDao;
+
+    List<List<Gao>> lists = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //去掉Activity上面的状态栏
         getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN , WindowManager.LayoutParams. FLAG_FULLSCREEN);
         setContentView(R.layout.activity_view_pager);
+        dao = GlobalApplication.getApplication().getDaoSession().getGaoDao();
+        gaoIdDao =GlobalApplication.getApplication().getDaoSession().getGaoIdDao();
         vp = (NoPreloadViewPager) findViewById(R.id.viewPager);
         tv_num = (TextView) findViewById(R.id.tv_num);
         tv_num1 = (TextView) findViewById(R.id.tv_num1);
@@ -67,7 +83,7 @@ public class ViewPagerActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 currentPosition = position;
-                tv_num.setText(((position+1)+"/"+allUrlBean.getData().size())+"");
+                tv_num.setText(((position+1)+"/"+lists.size())+"");
                 vp.setCurrentItem(position);
                 if(position==0){
                     tv_num1.setTextColor(Color.parseColor("#ff0000"));
@@ -131,7 +147,7 @@ public class ViewPagerActivity extends AppCompatActivity {
             }
         });
 
-        //添加数据
+        //查询数据
         initData();
     }
 
@@ -139,6 +155,37 @@ public class ViewPagerActivity extends AppCompatActivity {
      * 查询数据---添加数据
      */
     private void initData() {
+
+        listsGao = dao.loadAll();
+        gaoIdList = gaoIdDao.loadAll();
+        Log.e("--全部id--",gaoIdList.toString());
+        Log.e("--全部--",listsGao.toString());
+//        Query query = dao.queryBuilder().where(UserDao.Properties.Name.eq(et_Name.getText().toString().trim())).build();
+//        Toast.makeText(this, "查询的结果是：" + query.list().toString(), Toast.LENGTH_LONG).show();
+        //dao.queryBuilder();
+
+        for(int i = 0;i<gaoIdList.size();i++){
+            List<Gao> gao1 = new ArrayList<>();
+            for (int j = 0;j<listsGao.size();j++){
+
+                if(((long)listsGao.get(j).getGid())==(gaoIdList.get(i).getId())){
+                    gao1.add(listsGao.get(j));
+                }
+            }
+            lists.add(gao1);
+        }
+
+        Log.e("--全部改造后--",lists.toString());
+
+        //设置全局变量
+        GlobalApplication.listsAll =lists;
+
+        fragmentList = new ArrayList<TestFm>();
+        for(int i=0;i<lists.size();i++){
+            TestFm testFm = new TestFm().newInstance("hah", i);
+            fragmentList.add(testFm);
+        }
+        vp.setAdapter(new FragmentVPAdapter(getSupportFragmentManager(), (ArrayList<TestFm>) fragmentList));
 
 
     }

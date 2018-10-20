@@ -3,8 +3,12 @@ package com.dibi.livepulllocal;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.dibi.livepulllocal.entity.Gao;
 import com.dibi.livepulllocal.greendao.DaoMaster;
 import com.dibi.livepulllocal.greendao.DaoSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -19,6 +23,8 @@ public class GlobalApplication extends Application {
     private SQLiteDatabase db;
     private DaoMaster mDaoMaster;
     private DaoSession mDaoSession;
+
+    public static List<List<Gao>> listsAll = new ArrayList<>();
     @Override
     public void onCreate() {
         super.onCreate();
