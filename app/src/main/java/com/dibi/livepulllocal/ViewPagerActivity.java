@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ import java.util.List;
 public class ViewPagerActivity extends AppCompatActivity {
 
     private static final String TAG = "ViewPagerActivity" ;
-    private AllUrlBean allUrlBean;
+  //  private AllUrlBean allUrlBean;
 
     private NoPreloadViewPager vp;
     TextView tv_add_video_url ;
@@ -188,6 +189,63 @@ public class ViewPagerActivity extends AppCompatActivity {
         vp.setAdapter(new FragmentVPAdapter(getSupportFragmentManager(), (ArrayList<TestFm>) fragmentList));
 
 
+        //设置TM的标签
+        if(lists.size()==1){
+            tv_num1.setVisibility(View.VISIBLE);
+            tv_num2.setVisibility(View.GONE);
+            tv_num3.setVisibility(View.GONE);
+            tv_num4.setVisibility(View.GONE);
+            if(lists.get(0)!=null&&lists.get(0).size()>0){
+                tv_num1.setText(lists.get(0).get(0).getName());
+            }
+
+        }else if(lists.size()==2){
+            tv_num1.setVisibility(View.VISIBLE);
+            tv_num2.setVisibility(View.VISIBLE);
+            tv_num3.setVisibility(View.GONE);
+            tv_num4.setVisibility(View.GONE);
+            if(lists.get(0)!=null&&lists.get(0).size()>0){
+                tv_num1.setText(lists.get(0).get(0).getName());
+            }
+            if(lists.get(1)!=null&&lists.get(1).size()>0){
+                tv_num2.setText(lists.get(1).get(0).getName());
+            }
+
+        }else if(lists.size()==3){
+            tv_num1.setVisibility(View.VISIBLE);
+            tv_num2.setVisibility(View.VISIBLE);
+            tv_num3.setVisibility(View.VISIBLE);
+            tv_num4.setVisibility(View.GONE);
+            if(lists.get(0)!=null&&lists.get(0).size()>0){
+                tv_num1.setText(lists.get(0).get(0).getName());
+            }
+            if(lists.get(1)!=null&&lists.get(1).size()>0){
+                tv_num2.setText(lists.get(1).get(0).getName());
+            }
+            if(lists.get(2)!=null&&lists.get(2).size()>0){
+                tv_num3.setText(lists.get(2).get(0).getName());
+            }
+
+
+        }else if(lists.size()==4){
+            tv_num1.setVisibility(View.VISIBLE);
+            tv_num2.setVisibility(View.VISIBLE);
+            tv_num3.setVisibility(View.VISIBLE);
+            tv_num4.setVisibility(View.VISIBLE);
+            if(lists.get(0)!=null&&lists.get(0).size()>0){
+                tv_num1.setText(lists.get(0).get(0).getName());
+            }
+            if(lists.get(1)!=null&&lists.get(1).size()>0){
+                tv_num2.setText(lists.get(1).get(0).getName());
+            }
+            if(lists.get(2)!=null&&lists.get(2).size()>0){
+                tv_num3.setText(lists.get(2).get(0).getName());
+            }
+            if(lists.get(3)!=null&&lists.get(3).size()>0){
+                tv_num4.setText(lists.get(3).get(0).getName());
+            }
+
+        }
     }
 
 
@@ -243,17 +301,71 @@ public class ViewPagerActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 setupDialog.dismiss();
-                if(allUrlBean.getData() ==null|| allUrlBean.getData().size()==0){
+                if(lists ==null|| lists.size()==0){
                     Toast.makeText(ViewPagerActivity.this,"没有视频哦",Toast.LENGTH_LONG).show();
                     Log.e("----------------","-----------");
                    // showNoDialog();
                 }else {
-                    //niubiAlertDialog();
+                    niubiAlertDialog();
                 }
 
 
             }
         });
+
+    }
+
+
+    MyAlertDialog niubiDialog;
+    private void niubiAlertDialog() {
+        niubiDialog = new MyAlertDialog.Builder(this)
+                .setContentView(R.layout.alertdialog_commom_1)
+                .show();
+        //.formBottom(true).fullWidth().show();
+//        Button button1 = niubiDialog.getView(R.id.btn_common_1);
+//        Button button2 = niubiDialog.getView(R.id.btn_common_2);
+
+        final EditText et_1 = niubiDialog.getView(R.id.et_1);
+        final EditText et_2 = niubiDialog.getView(R.id.et_2);
+        final EditText et_3 = niubiDialog.getView(R.id.et_3);
+        final EditText et_4 = niubiDialog.getView(R.id.et_4);
+
+        niubiDialog.setText(R.id.btn_common_1,"哈哈");
+
+        if (lists !=null&& lists.size()>0){
+            Log.e(TAG,lists.get(currentPosition).size()+"");
+            if(lists.get(currentPosition).size()==3){
+                et_1.setVisibility(View.VISIBLE);
+                et_2.setVisibility(View.VISIBLE);
+                et_3.setVisibility(View.VISIBLE);
+                et_1.setText(lists.get(currentPosition).get(0).getPath());
+                et_2.setText(lists.get(currentPosition).get(1).getPath());
+                et_3.setText(lists.get(currentPosition).get(2).getPath());
+                et_4.setVisibility(View.GONE);
+            }else if(lists.get(currentPosition).size()>=4){
+                et_1.setVisibility(View.VISIBLE);
+                et_2.setVisibility(View.VISIBLE);
+                et_3.setVisibility(View.VISIBLE);
+                et_1.setText(lists.get(currentPosition).get(0).getPath());
+                et_2.setText(lists.get(currentPosition).get(1).getPath());
+                et_3.setText(lists.get(currentPosition).get(2).getPath());
+                et_4.setVisibility(View.VISIBLE);
+                et_4.setText(lists.get(currentPosition).get(3).getPath());
+            }if(lists.get(currentPosition).size()==2){
+                et_1.setVisibility(View.VISIBLE);
+                et_2.setVisibility(View.VISIBLE);
+                et_1.setText(lists.get(currentPosition).get(0).getPath());
+                et_2.setText(lists.get(currentPosition).get(1).getPath());
+                et_3.setVisibility(View.GONE);
+                et_4.setVisibility(View.GONE);
+            }if(lists.get(currentPosition).size()==1){
+                et_1.setVisibility(View.VISIBLE);
+                et_1.setText(lists.get(currentPosition).get(0).getPath());
+                et_4.setVisibility(View.GONE);
+                et_3.setVisibility(View.GONE);
+                et_2.setVisibility(View.GONE);
+            }
+        }
 
     }
 
