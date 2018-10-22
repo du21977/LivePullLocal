@@ -1,6 +1,7 @@
 package com.dibi.livepulllocal;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +22,8 @@ import com.dibi.livepulllocal.entity.User;
 import com.dibi.livepulllocal.greendao.GaoDao;
 import com.dibi.livepulllocal.greendao.GaoIdDao;
 import com.dibi.livepulllocal.greendao.UserDao;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +48,8 @@ public class Gao2Activity extends AppCompatActivity {
         dao = GlobalApplication.getApplication().getDaoSession().getGaoDao();
         gaoIdDao =GlobalApplication.getApplication().getDaoSession().getGaoIdDao();
         listsGao = new ArrayList<>();
-        listsGao = dao.loadAll();
+        //listsGao = dao.loadAll();
+        listsGao = queryGaoList();
         gaoIdList = gaoIdDao.loadAll();
          gaoAdapter = new GaoAdapter();
         listview.setAdapter(gaoAdapter);
@@ -166,23 +171,155 @@ public class Gao2Activity extends AppCompatActivity {
             TextView tv_list_item_edit = view.findViewById(R.id.tv_list_item_edit);
             TextView tv_list_item_detele = view.findViewById(R.id.tv_list_item_detele);
             TextView tv_list_item_add = view.findViewById(R.id.tv_list_item_add);
+            LinearLayout ll_background = view.findViewById(R.id.ll_background);
 
             tv_list_item_zu_name.setText(listsGao.get(position).getName());
             tv_list_item_path.setText(listsGao.get(position).getPath());
 
+            if (position ==0){
+                if(color==0){
+                    ll_background.setBackgroundColor(Color.parseColor("#ffffff"));
+                }else if(color ==1){
+                    ll_background.setBackgroundColor(Color.parseColor("#ff0000"));
+                }
+
+            }else {
+                if(listsGao.get(position).getGid().equals(listsGao.get(position-1).getGid())){
+                    if(color == 0){
+                        ll_background.setBackgroundColor(Color.parseColor("#ffffff"));
+                    }else if(color ==1){
+                        ll_background.setBackgroundColor(Color.parseColor("#ff0000"));
+                    }
+
+                }else {
+                    if(color == 0){
+                        ll_background.setBackgroundColor(Color.parseColor("#ffffff"));
+                    }else if(color ==1){
+                        ll_background.setBackgroundColor(Color.parseColor("#ff0000"));
+                    }
+                    changeColor();
+                }
+            }
+
+            //删除单个视频
             tv_list_item_detele.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     dao.delete(listsGao.get(position));
-                    listsGao = dao.loadAll();
+                    //listsGao = dao.loadAll();
+                    listsGao = queryGaoList();
                     notifyDataSetChanged();
                 }
             });
+            //添加单个视频
+            tv_list_item_add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String name = listsGao.get(position).getName();
+                    long gid = listsGao.get(position).getGid();
+                    AddOneVideoDialog( name, gid);
+
+                }
+            });
+
+            //编辑单个视频
+            tv_list_item_edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String name = listsGao.get(position).getName();
+                    String path = listsGao.get(position).getPath();
+                    long gid = listsGao.get(position).getGid();
+                    long id = listsGao.get(position).getId();
+                    EditOneVideoDialog(id, name,  gid, path) ;
+
+                }
+            });
+
 
             return view;
         }
     }
 
+
+    /**
+     * 添加单个视频
+     */
+    MyAlertDialog addOneAddressDialog;
+    private void AddOneVideoDialog(final String name, final long gid) {
+        addOneAddressDialog = new MyAlertDialog.Builder(this)
+                .setContentView(R.layout.alertdialog_add_one_address)
+                .setCancelable(true)
+                .show();
+        final EditText et_1 = addOneAddressDialog.getView(R.id.et_1);
+        addOneAddressDialog.setOnclickListener(R.id.tv_dialog_add, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(et_1.getText().toString().trim().equals("")){
+                    Toast.makeText(Gao2Activity.this,"视频地址不能为空",Toast.LENGTH_LONG).show();
+                }else {
+                    Gao gao = new Gao(null,et_1.getText().toString().trim(),name,gid);
+                    dao.insert(gao);
+                    //listsGao = dao.loadAll();
+                    listsGao = queryGaoList();
+                    gaoAdapter.notifyDataSetChanged();
+                }
+                addOneAddressDialog.dismiss();
+
+            }
+        });
+
+    }
+
+    /**
+     * 修改单个视频
+     */
+    MyAlertDialog editOneAddressDialog;
+    private void EditOneVideoDialog( final long id,final String name, final long gid,final String path) {
+        editOneAddressDialog = new MyAlertDialog.Builder(this)
+                .setContentView(R.layout.alertdialog_edit_one_address)
+                .setCancelable(true)
+                .show();
+        final EditText et_1 = editOneAddressDialog.getView(R.id.et_1);
+        et_1.setText(path);
+        editOneAddressDialog.setOnclickListener(R.id.tv_dialog_add, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(et_1.getText().toString().trim().equals("")){
+                    Toast.makeText(Gao2Activity.this,"视频地址不能为空",Toast.LENGTH_LONG).show();
+                }else {
+                    Gao gao = new Gao(id,et_1.getText().toString().trim(),name,gid);
+                    dao.update(gao);
+                    //listsGao = dao.loadAll();
+                    listsGao = queryGaoList();
+                    gaoAdapter.notifyDataSetChanged();
+                }
+                editOneAddressDialog.dismiss();
+
+            }
+        });
+
+    }
+
+    private  int color=0;
+    public int changeColor(){
+        if(color == 0){
+            color=1;
+            return color;
+        }else if(color == 1){
+            color = 0;
+            return color;
+        }
+        return color;
+
+    }
+
+    public  List<Gao> queryGaoList() {
+        List<Gao> gao = new ArrayList<>();
+        QueryBuilder queryBuilder = dao.queryBuilder();
+        queryBuilder.orderAsc(GaoDao.Properties.Gid);
+        gao = queryBuilder.list();
+        return gao;
+    }
 
     @Override
     public void onBackPressed() {

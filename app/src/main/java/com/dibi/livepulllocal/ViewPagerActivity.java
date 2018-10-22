@@ -165,6 +165,7 @@ public class ViewPagerActivity extends AppCompatActivity {
 //        Toast.makeText(this, "查询的结果是：" + query.list().toString(), Toast.LENGTH_LONG).show();
         //dao.queryBuilder();
 
+
         for(int i = 0;i<gaoIdList.size();i++){
             List<Gao> gao1 = new ArrayList<>();
             for (int j = 0;j<listsGao.size();j++){
@@ -173,7 +174,10 @@ public class ViewPagerActivity extends AppCompatActivity {
                     gao1.add(listsGao.get(j));
                 }
             }
-            lists.add(gao1);
+            if(gao1.size()!=0){
+                lists.add(gao1);
+            }
+
         }
 
         Log.e("--全部改造后--",lists.toString());
@@ -351,19 +355,21 @@ public class ViewPagerActivity extends AppCompatActivity {
                 et_3.setText(lists.get(currentPosition).get(2).getPath());
                 et_4.setVisibility(View.VISIBLE);
                 et_4.setText(lists.get(currentPosition).get(3).getPath());
-            }if(lists.get(currentPosition).size()==2){
+            }else if(lists.get(currentPosition).size()==2){
                 et_1.setVisibility(View.VISIBLE);
                 et_2.setVisibility(View.VISIBLE);
                 et_1.setText(lists.get(currentPosition).get(0).getPath());
                 et_2.setText(lists.get(currentPosition).get(1).getPath());
                 et_3.setVisibility(View.GONE);
                 et_4.setVisibility(View.GONE);
-            }if(lists.get(currentPosition).size()==1){
+            }else if(lists.get(currentPosition).size()==1){
                 et_1.setVisibility(View.VISIBLE);
                 et_1.setText(lists.get(currentPosition).get(0).getPath());
                 et_4.setVisibility(View.GONE);
                 et_3.setVisibility(View.GONE);
                 et_2.setVisibility(View.GONE);
+            }else if(lists.get(currentPosition).size()==0){
+                Log.e("---","该组没有视频哦");
             }
         }
 
