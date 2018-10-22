@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class Gao2Activity extends AppCompatActivity {
         listsGao = new ArrayList<>();
         //listsGao = dao.loadAll();
         listsGao = queryGaoList();
+        Log.e("---",listsGao.toString());
         gaoIdList = gaoIdDao.loadAll();
          gaoAdapter = new GaoAdapter();
         listview.setAdapter(gaoAdapter);
@@ -132,7 +134,8 @@ public class Gao2Activity extends AppCompatActivity {
                 }
                 dao.insertInTx(gaoList);
                 listsGao = dao.loadAll();
-
+                listsGao = queryGaoList();
+                Log.e("---添加组后",listsGao.toString());
                 GaoId gaoId = new GaoId(null,et_name.getText().toString().trim());
                 gaoIdDao.insert(gaoId);
                 gaoIdList = gaoIdDao.loadAll();
@@ -176,6 +179,7 @@ public class Gao2Activity extends AppCompatActivity {
             tv_list_item_zu_name.setText(listsGao.get(position).getName());
             tv_list_item_path.setText(listsGao.get(position).getPath());
 
+            /*
             if (position ==0){
                 if(color==0){
                     ll_background.setBackgroundColor(Color.parseColor("#ffffff"));
@@ -184,7 +188,7 @@ public class Gao2Activity extends AppCompatActivity {
                 }
 
             }else {
-                if(listsGao.get(position).getGid().equals(listsGao.get(position-1).getGid())){
+                if(listsGao.get(position).getName().equals(listsGao.get(position-1).getName())){
                     if(color == 0){
                         ll_background.setBackgroundColor(Color.parseColor("#ffffff"));
                     }else if(color ==1){
@@ -199,6 +203,12 @@ public class Gao2Activity extends AppCompatActivity {
                     }
                     changeColor();
                 }
+            }*/
+
+            if(listsGao.get(position).getGid()%2==1){
+                ll_background.setBackgroundColor(Color.parseColor("#ffffff"));
+            }else if(listsGao.get(position).getGid()%2==0){
+                ll_background.setBackgroundColor(Color.parseColor("#eeeeee"));
             }
 
             //删除单个视频
@@ -261,6 +271,7 @@ public class Gao2Activity extends AppCompatActivity {
                     dao.insert(gao);
                     //listsGao = dao.loadAll();
                     listsGao = queryGaoList();
+                    Log.e("---添加单个后",listsGao.toString());
                     gaoAdapter.notifyDataSetChanged();
                 }
                 addOneAddressDialog.dismiss();
@@ -291,6 +302,7 @@ public class Gao2Activity extends AppCompatActivity {
                     dao.update(gao);
                     //listsGao = dao.loadAll();
                     listsGao = queryGaoList();
+                    Log.e("---编辑单个后",listsGao.toString());
                     gaoAdapter.notifyDataSetChanged();
                 }
                 editOneAddressDialog.dismiss();
